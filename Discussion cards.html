@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Discussion Card Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; }
+        select, button { padding: 10px; margin: 10px 0; }
+        .card { background: #f8f9fa; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Discussion Cards</h1>
+    <select id="subjectSelect">
+        <option>Challenges and Growth</option>
+        <option>Adapting to Change</option>
+        <option>Trying New Things</option>
+        <option>Feedback and Improvement</option>
+        <option>Setting Goals and Persistence</option>
+        <option>Teamwork and Collaboration</option>
+        <option>Self-Reflection and Positive Mindset</option>
+        <option>Problem-Solving and Resourcefulness</option>
+        <option>Social and Global Awareness</option>
+        <option>Digital and Ethical Responsibility</option>
+    </select>
+    <button onclick="showCard()">Show New Card</button>
+    <div id="cardDisplay" class="card"></div>
+
+    <script>
+        const cardsBySubject = {
+            "Challenges and Growth": [
+                "Think about a time when you found something really hard at first, but then you got better at it. What did you learn from that experience?",
+                "If you make a mistake in your homework, what can you do to learn from it instead of feeling bad?",
+                "Imagine you're trying to solve a tricky puzzle, and it's taking a long time. What would you say to yourself to keep going?",
+                "What's one thing you're really good at? How did you get good at it?",
+                "If you tried out for a sports team and didn't make it, how would you handle it? What could you do next?"
+            ],
+            "Adapting to Change": [
+                "Imagine your favorite game changed its rules. How would you feel at first? What could you do to adapt and still have fun?",
+                "If your family had to move to a new city, what would be some positive things you could look forward to?",
+                "How has technology changed the way we communicate? Is it mostly positive or negative? Why?",
+                "If your teacher started using a new way to teach, how would you adjust to it?",
+                "Think about how life was different 100 years ago. What changes do you think were the most important?"
+            ],
+            "Trying New Things": [
+                "What's something new you'd like to try, but you're a bit scared of? How can you encourage yourself to give it a go?",
+                "If you could learn about any topic in the world, what would it be? Why does it interest you?",
+                "If you could invent something to make the world a better place, what would it be? How would you start creating it?",
+                "If you could travel to any planet, which one would you choose? What would you hope to discover?",
+                "If you could visit any country, where would you go? What would you want to learn about their culture?"
+            ],
+            "Feedback and Improvement": [
+                "If a friend gives you advice on how to improve your drawing, how would you react? Why is feedback important?",
+                "Who is someone you admire? What qualities do they have that you'd like to develop in yourself?",
+                "What's one thing you'd like to improve about yourself? How can you start working on it?",
+                "How do you feel when you achieve something you're proud of? How do you handle it when things don't go as planned?",
+                "Looking back on this year, what's one way you've grown or changed? How does it make you feel?"
+            ],
+            "Setting Goals and Persistence": [
+                "What's a small goal you can set for yourself this week? How will you celebrate when you achieve it?",
+                "If you were a superhero, what kind of challenges would you face, and how would you overcome them?",
+                "If you could achieve anything in the world, what would it be? What's one step you can take towards that dream?",
+                "What job do you think will be really important in the future? Why?",
+                "What do you think the world will be like in 20 years? How can you prepare for those changes?"
+            ],
+            "Teamwork and Collaboration": [
+                "Think about a time when you worked with others on a project. What did you learn about teamwork?",
+                "If you were the leader of a group project, how would you make sure everyone felt included and valued?",
+                "If two of your friends were arguing, how would you help them resolve their conflict?",
+                "How do friendships change as you grow older? How can you maintain good friendships?",
+                "How would you feel if you were in someone else's shoes for a day? What might you learn?"
+            ],
+            "Self-Reflection and Positive Mindset": [
+                "What are some kind things you can say to yourself when you're feeling down?",
+                "What are three things you're grateful for today? How do they make your life better?",
+                "What's your favorite way to express yourself creatively? How does it make you feel?",
+                "What are some activities that help you relax and feel calm? Why are they important?",
+                "What are some habits you can develop now that will help you grow into a strong and healthy adult?"
+            ],
+            "Problem-Solving and Resourcefulness": [
+                "If you were stuck on a deserted island, what three things would you want to have with you? How would you use them to survive?",
+                "Think of a problem in your school or community. How would you solve it?",
+                "If you found a wallet with money in it, what would you do? Why?",
+                "If you had a magic watch that could stop time, how would you use it? What does this say about how you value your time?",
+                "If you were given $100 to spend or save, what would you do with it? Why?"
+            ],
+            "Social and Global Awareness": [
+                "What are some ways we can help protect the environment as things change around us?",
+                "Why is it important to protect endangered animals? What can we do to help?",
+                "What global issue concerns you the most? How can young people like you make a difference?",
+                "If you could volunteer for any cause, what would it be? Why does it matter to you?",
+                "How does art from different cultures help us understand the world better?"
+            ],
+            "Digital and Ethical Responsibility": [
+                "What are some rules you think are important for being a good digital citizen?",
+                "How can you tell if information online is true or false? Why is this important?",
+                "Do you think robots should have rights? Why or why not?",
+                "What are some fun ways to stay active and healthy? How do they benefit you?",
+                "If you could ask a scientist any question, what would it be? Why are you curious about it?"
+            ]
+        };
+
+        let remainingCards = {};
+
+        function initializeCards() {
+            Object.keys(cardsBySubject).forEach(subject => {
+                remainingCards[subject] = Array.from({length: cardsBySubject[subject].length}, (_, i) => i);
+            });
+        }
+
+        function showCard() {
+            const subject = document.getElementById('subjectSelect').value;
+            const availableCards = remainingCards[subject];
+            
+            if (availableCards.length === 0) {
+                document.getElementById('cardDisplay').innerHTML = "You've viewed all cards in this category!";
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * availableCards.length);
+            const cardIndex = availableCards[randomIndex];
+            
+            // Remove used card from remaining
+            remainingCards[subject] = availableCards.filter((_, idx) => idx !== randomIndex);
+            
+            // Display card
+            document.getElementById('cardDisplay').innerHTML = cardsBySubject[subject][cardIndex];
+        }
+
+        // Initialize on page load
+        window.onload = initializeCards;
+    </script>
+</body>
+</html>
